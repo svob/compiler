@@ -1,7 +1,5 @@
 # Compiler :see_no_evil:
-Compiler and LR parser of simple context-free grammar, implemeted in Flex and YACC
-
-This compiler was implemented as school term project.
+Compiler and LR parser of simple context-free grammar, implemeted in Flex and YACC implemented for school term project.
 
 ####Input
 Compiler works with standard input `stdin` and accept grammar specified by rules:
