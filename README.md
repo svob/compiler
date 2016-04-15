@@ -45,6 +45,6 @@ Option | Function | Example
 -r | Run an intepreter and execute program |
 -h | Prints out options |
 
-
+***
 
 I know that the code is ugly (especially printQuads function) so feel free to refactor and send pull request :stuck_out_tongue:
