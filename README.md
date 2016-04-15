@@ -36,6 +36,7 @@ HLT | HLT NULL NULL NULL | end of program
 
 ####Usage
 ./project [options]
+
 | Option | Function | Example
 | ------ | -------- | -------
 | -t | Prints out a list of applied rules | Reducing by rule #11
