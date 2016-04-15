@@ -6,7 +6,7 @@ LEX = flex	# -l turns on maximum compatibility with the original
                 # mean full compatibility. Use of this option costs
                 # a considerable amount of performance,
 
-CFLAGS = -g -std=gnu99
+CFLAGS = -g -std=gnu99 #-DYYDEBUG
 RPATH = -Wl,-rpath=/usr/local/lib
 YACC = byacc -d -v -t # byacc for cygwin
 

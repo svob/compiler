@@ -11,19 +11,24 @@ nodeType *num(int value);
 nodeType *id(char *value);
 nodeType *opr(int oper, int nops, ...);
 void printQuads(nodeType *root);
+int execute(nodeType *node);
 void freeNode(nodeType *p);
 void stack_init(Stack *s);
 
 extern int yylineno;
 extern char *yytext;
 extern int yylex();
-//int yydebug = 1;
+
+#if YYDEBUG
+    int yydebug = 1;
+#endif
 
 nodeType *root;
 Stack *stack;
 
 int tmp = 0;
 int lbl = 0;
+int symbols = 0;
 int err = false;
 
 int t_opt = false,
@@ -41,7 +46,7 @@ int t_opt = false,
 
 %start prog
 %token PROGRAM BLOCK BEGIN_T END_T IF THEN ASSIGN PRINT
-%token <string> ID
+%token <string> ID STR
 %token <number> NUM
 %left '+'
 %left AND
@@ -188,6 +193,8 @@ int main(int argc, char **argv) {
 		d_opt = true;
 	    if (strcmp(argv[i], "-h") == 0)
 		h_opt = true;
+	    if (strcmp(argv[i], "-r") == 0)
+		r_opt = true;
 	}
 	if (d_opt)
 	    t_opt = v_opt = false;
@@ -211,6 +218,9 @@ int main(int argc, char **argv) {
         if (!err) {
             if (d_opt) {
                 printf("Syntax OK\n");
+            }
+            else if (r_opt) {
+                return execute(root);
             }
             else {
                 stack = malloc(sizeof(Stack));
@@ -244,7 +254,7 @@ nodeType *id(char *value) {
 	
     if ((p->id.value = strdup(value)) == NULL)
 	yyerror("out of memory");
-    p->type = idType;	
+    p->type = idType;
     
     return p;
 }
@@ -458,4 +468,49 @@ void printQuads(nodeType *node) {
 	    }
 	}
     }
+}
+
+int symlook(char *s) {
+    for (int i = 0; i < symbols; i++) {
+        if (strcmp(sym[i]->symbol, s) == 0)
+            return i;
+    }
+    if (symbols < MAX_SYMBOL) {
+        sym[symbols] = malloc(sizeof(Symbol));
+        sym[symbols]->symbol = s;
+        return symbols++;
+    } else {
+        printf("Limit of symbols reached\n");
+        return -1;
+    }
+}
+
+int execute(nodeType *node) {
+    if (!node) return 0;
+    switch (node->type) {
+    case numType: return node->num.value;
+    case idType: return sym[symlook(node->id.value)]->value;
+    case opType:
+        switch (node->opr.oper) {
+            case ASSIGN: ;
+                int index = symlook(node->opr.op[0]->id.value);
+                    sym[index]->value = execute(node->opr.op[1]);
+                return sym[index]->value;
+            case IF:
+                if (execute(node->opr.op[0]) == 0)
+                    execute(node->opr.op[1]);
+                return 0;
+            case PRINT:
+                    printf("%d\n", execute(node->opr.op[0]));
+                return 0;
+            case '+':
+                return execute(node->opr.op[0]) + execute(node->opr.op[1]);
+            case AND:
+                return execute(node->opr.op[0]) && execute(node->opr.op[1]);
+            case ';':
+                execute(node->opr.op[0]);
+                return execute(node->opr.op[1]);
+        }
+    }
+    return 0;
 }

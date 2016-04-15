@@ -32,3 +32,12 @@ typedef struct {
     int sizeNum;
     int sizeId;
 }Stack;
+
+#define MAX_SYMBOL 500
+
+typedef struct {
+    char *symbol;
+    int value;
+} Symbol;
+
+Symbol *sym[MAX_SYMBOL];
