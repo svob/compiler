@@ -36,7 +36,7 @@ HLT | HLT NULL NULL NULL | end of program
 
 ####Usage
 ./project [options]
-Option | Function | Example
+ Option | Function | Example
 ------- | -------- | -------
 -t | Prints out a list of applied rules | Reducing by rule #11
 -v | Extends -t by line number and grammar rules | Reducing by rule #2, line #11 (BEGIN statement_list END)
