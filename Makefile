@@ -8,7 +8,7 @@ LEX = flex	# -l turns on maximum compatibility with the original
 
 CFLAGS = -g -std=gnu99
 RPATH = -Wl,-rpath=/usr/local/lib
-YACC = byacc -d -v -t
+YACC = byacc -d -v -t # byacc for cygwin
 
 project: project.tab.o project.yy.o 
 	${CC} -o project project.tab.o project.yy.o ${LIBS} $(CFLAGS) ${RPATH}
