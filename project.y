@@ -133,12 +133,21 @@ stmt	: block			{
 				}
 				$$ = opr(PRINT, 1, $2);
 				}
+        | PRINT STR             {
+				if (t_opt || v_opt) {
+				    printf("Reducing by rule #9");
+				    if (v_opt)
+					printf("\tline #%d (PRINT)", yylineno);
+				    printf("\n");
+				}
+				$$ = opr(PRINT, 1, str($2));
+				}
         | ID error stmt         { yyerrok; }
 	;
     
 expr	: expr '+' expr		{
 				if (t_opt || v_opt) {
-				    printf("Reducing by rule #9");
+				    printf("Reducing by rule #10");
 				    if (v_opt)
 					printf("\tline #%d (expression + expression)", yylineno);
 				    printf("\n");
@@ -147,7 +156,7 @@ expr	: expr '+' expr		{
 				}
 	| expr AND expr		{
 				if (t_opt || v_opt) {
-				    printf("Reducing by rule #10");
+				    printf("Reducing by rule #11");
 				    if (v_opt)
 					printf("\tline #%d (expression AND expression)", yylineno);
 				    printf("\n");
@@ -156,7 +165,7 @@ expr	: expr '+' expr		{
 				}
 	| ID			{
 				if (t_opt || v_opt) {
-				    printf("Reducing by rule #11");
+				    printf("Reducing by rule #12");
 				    if (v_opt)
 					printf("\tline #%d (NAME)", yylineno);
 				    printf("\n");
@@ -165,7 +174,7 @@ expr	: expr '+' expr		{
 				}
 	| NUM			{
 				if (t_opt || v_opt) {
-				    printf("Reducing by rule #12");
+				    printf("Reducing by rule #13");
 				    if (v_opt)
 					printf("\tline #%d (INTEGER)", yylineno);
 				    printf("\n");
@@ -255,6 +264,21 @@ nodeType *id(char *value) {
     if ((p->id.value = strdup(value)) == NULL)
 	yyerror("out of memory");
     p->type = idType;
+    
+    return p;
+}
+
+nodeType *str(char *value) {
+    nodeType *p;
+    
+    if ((p = malloc(sizeof(nodeType))) == NULL)
+	yyerror("out of memory");
+	
+    if ((p->id.value = strdup(value)) == NULL)
+	yyerror("out of memory");
+    else
+        p->id.value[strlen(p->id.value)-1] = '\0';
+    p->type = strType;
     
     return p;
 }
@@ -362,6 +386,7 @@ void printQuads(nodeType *node) {
 	stack_pushNum(stack, node->num.value);
 	break;
     case idType:
+    case strType:
 	stack_pushId(stack, node->id.value);
 	break;
     case opType:
@@ -399,7 +424,9 @@ void printQuads(nodeType *node) {
         case PRINT:
             printQuads(node->opr.op[0]);
             if (node->opr.op[0]->type == numType)
-                printf("\tPRT  %d  NULL  NULL\n", stack_popNum(stack)); 
+                printf("\tPRT  %d  NULL  NULL\n", stack_popNum(stack));
+            else if (node->opr.op[0]->type == strType)
+                printf("\tPRT  \"%s\"  NULL  NULL\n", stack_popId(stack));
             else
                 printf("\tPRT  %s  NULL  NULL\n", stack_popId(stack));
             break;
@@ -489,6 +516,7 @@ int execute(nodeType *node) {
     if (!node) return 0;
     switch (node->type) {
     case numType: return node->num.value;
+    case strType: return symlook(node->id.value);
     case idType: return sym[symlook(node->id.value)]->value;
     case opType:
         switch (node->opr.oper) {
@@ -501,6 +529,9 @@ int execute(nodeType *node) {
                     execute(node->opr.op[1]);
                 return 0;
             case PRINT:
+                if (node->opr.op[0]->type == strType)
+                    printf("%s\n", sym[execute(node->opr.op[0])]->symbol);
+                else
                     printf("%d\n", execute(node->opr.op[0]));
                 return 0;
             case '+':

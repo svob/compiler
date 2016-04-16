@@ -1,0 +1,33 @@
+; testing DL expressions
+
+program test;
+
+begin
+
+; expressions with numbers only
+    x := 1;
+    x := 1+2;
+    print x;
+    x := 1 and 2;
+    x := 1 + 2 and 3;
+    x := 1 and 2 + 3;
+    print x;
+
+; expressions with vars
+    a := 1; b := 2; c := 0;
+    x := a;
+    x := a+b;
+    x := a and b;
+    print x;
+    x := a + b and c;
+    x := a and b + c;
+    print x;
+
+; mixed case
+    x := a + 4;
+    x := 0 and b;
+    x := 1 + b and 3;
+    x := a and 2 + c;
+    print x;
+    print 1 and x + 4 + 2 + b + c + a
+end.

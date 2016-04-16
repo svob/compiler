@@ -1,0 +1,33 @@
+; testing BLOCK DL statement
+
+program test;
+
+begin
+
+; just a block
+    begin
+        x:=0;
+        print x
+    end;
+
+; a block with statement_list
+    begin
+        x:=0;
+        y:=0;
+        if x then
+            c:=1;
+            begin
+                x:=2
+            end
+    end;
+
+; multiple included blocks
+    begin
+        begin
+            begin
+                y:=2;
+                print "bry den"
+            end
+        end
+    end
+end.
