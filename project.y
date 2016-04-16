@@ -347,20 +347,6 @@ char *stack_popId(Stack *s) {
 	return NULL;
 }
 
-int stack_topNum(Stack *s) {
-    if (s->sizeId > 0)
-        return s->num[s->sizeNum-1];
-    else
-        return -1;
-}
-
-char *stack_topId(Stack *s) {
-    if (s->sizeId > 0)
-        return s->id[s->sizeId-1];
-    else
-        return NULL;
-}
-
 void stack_shuffleTopNum(Stack *s) {
     if (s->sizeNum > 1) {
         int temp1 = stack_popNum(s);
