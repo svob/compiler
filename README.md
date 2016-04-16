@@ -12,6 +12,7 @@ STMT  -> BLOCK
        | if EXPR then STMT
        | ID := EXPR
        | print EXPR
+       | print STR
 EXPR  -> EXPR + EXPR
        | EXPR and EXPR
        | ID
@@ -19,6 +20,7 @@ EXPR  -> EXPR + EXPR
        
 ID    -> case-sensitive identifier, starting with a lowercase letter
 NUM   -> integer
+STR   -> string literal
 ```
 
 ####Output

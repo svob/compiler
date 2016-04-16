@@ -1,0 +1,26 @@
+program programovic;
+
+begin
+x := 3;
+x := x and 0;
+y := 0;
+z := 0;
+
+print "trying recursive if";
+if x then
+    if y then
+        if z then
+            begin
+                p := 8;
+                print "I'm inside :o";
+                print p
+            end;
+
+
+if x and 0 then
+    begin
+        p:=1;
+        print p
+    end;
+print x
+end.

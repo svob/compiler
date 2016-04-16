@@ -1,4 +1,4 @@
-typedef enum { numType, idType, opType } nodeEnum;
+typedef enum { numType, idType, opType, strType } nodeEnum;
 
 typedef struct {
     int value;

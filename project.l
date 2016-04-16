@@ -10,12 +10,20 @@ void yyerror(char *);
 %}
 
 %x comment
+%x str
 
 %%
 
-[ \t]		;
+[ \t\r]		;
 \n		;
 ^;		BEGIN(comment);
+\"              BEGIN(str);
+<str>[^"]    yymore();
+<str>\"      {
+                yylval.string = strdup(yytext);
+                BEGIN(0);
+                return STR;
+                }
 program		return PROGRAM;
 [;.+]		return *yytext;
 begin		return BEGIN_T;

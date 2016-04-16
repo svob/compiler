@@ -1,0 +1,312 @@
+   0  $accept : prog $end
+
+   1  prog : PROGRAM ID ';' block '.'
+
+   2  block : BEGIN_T list END_T
+   3        | BEGIN_T error END_T
+
+   4  list : stmt
+   5       | stmt ';' list
+
+   6  stmt : block
+   7       | IF expr THEN stmt
+   8       | ID ASSIGN expr
+   9       | PRINT expr
+  10       | ID error stmt
+
+  11  expr : expr '+' expr
+  12       | expr AND expr
+  13       | ID
+  14       | NUM
+
+state 0
+	$accept : . prog $end  (0)
+
+	PROGRAM  shift 1
+	.  error
+
+	prog  goto 2
+
+
+state 1
+	prog : PROGRAM . ID ';' block '.'  (1)
+
+	ID  shift 3
+	.  error
+
+
+state 2
+	$accept : prog . $end  (0)
+
+	$end  accept
+
+
+state 3
+	prog : PROGRAM ID . ';' block '.'  (1)
+
+	';'  shift 4
+	.  error
+
+
+state 4
+	prog : PROGRAM ID ';' . block '.'  (1)
+
+	BEGIN_T  shift 5
+	.  error
+
+	block  goto 6
+
+
+state 5
+	block : BEGIN_T . list END_T  (2)
+	block : BEGIN_T . error END_T  (3)
+
+	error  shift 7
+	BEGIN_T  shift 5
+	IF  shift 8
+	PRINT  shift 9
+	ID  shift 10
+	.  error
+
+	block  goto 11
+	list  goto 12
+	stmt  goto 13
+
+
+state 6
+	prog : PROGRAM ID ';' block . '.'  (1)
+
+	'.'  shift 14
+	.  error
+
+
+state 7
+	block : BEGIN_T error . END_T  (3)
+
+	END_T  shift 15
+	.  error
+
+
+state 8
+	stmt : IF . expr THEN stmt  (7)
+
+	ID  shift 16
+	NUM  shift 17
+	.  error
+
+	expr  goto 18
+
+
+state 9
+	stmt : PRINT . expr  (9)
+
+	ID  shift 16
+	NUM  shift 17
+	.  error
+
+	expr  goto 19
+
+
+state 10
+	stmt : ID . ASSIGN expr  (8)
+	stmt : ID . error stmt  (10)
+
+	error  shift 20
+	ASSIGN  shift 21
+	.  error
+
+
+state 11
+	stmt : block .  (6)
+
+	.  reduce 6
+
+
+state 12
+	block : BEGIN_T list . END_T  (2)
+
+	END_T  shift 22
+	.  error
+
+
+state 13
+	list : stmt .  (4)
+	list : stmt . ';' list  (5)
+
+	';'  shift 23
+	END_T  reduce 4
+
+
+state 14
+	prog : PROGRAM ID ';' block '.' .  (1)
+
+	.  reduce 1
+
+
+state 15
+	block : BEGIN_T error END_T .  (3)
+
+	.  reduce 3
+
+
+state 16
+	expr : ID .  (13)
+
+	.  reduce 13
+
+
+state 17
+	expr : NUM .  (14)
+
+	.  reduce 14
+
+
+state 18
+	stmt : IF expr . THEN stmt  (7)
+	expr : expr . '+' expr  (11)
+	expr : expr . AND expr  (12)
+
+	THEN  shift 24
+	'+'  shift 25
+	AND  shift 26
+	.  error
+
+
+state 19
+	stmt : PRINT expr .  (9)
+	expr : expr . '+' expr  (11)
+	expr : expr . AND expr  (12)
+
+	'+'  shift 25
+	AND  shift 26
+	END_T  reduce 9
+	';'  reduce 9
+
+
+state 20
+	stmt : ID error . stmt  (10)
+
+	BEGIN_T  shift 5
+	IF  shift 8
+	PRINT  shift 9
+	ID  shift 10
+	.  error
+
+	block  goto 11
+	stmt  goto 27
+
+
+state 21
+	stmt : ID ASSIGN . expr  (8)
+
+	ID  shift 16
+	NUM  shift 17
+	.  error
+
+	expr  goto 28
+
+
+state 22
+	block : BEGIN_T list END_T .  (2)
+
+	.  reduce 2
+
+
+state 23
+	list : stmt ';' . list  (5)
+
+	BEGIN_T  shift 5
+	IF  shift 8
+	PRINT  shift 9
+	ID  shift 10
+	.  error
+
+	block  goto 11
+	list  goto 29
+	stmt  goto 13
+
+
+state 24
+	stmt : IF expr THEN . stmt  (7)
+
+	BEGIN_T  shift 5
+	IF  shift 8
+	PRINT  shift 9
+	ID  shift 10
+	.  error
+
+	block  goto 11
+	stmt  goto 30
+
+
+state 25
+	expr : expr '+' . expr  (11)
+
+	ID  shift 16
+	NUM  shift 17
+	.  error
+
+	expr  goto 31
+
+
+state 26
+	expr : expr AND . expr  (12)
+
+	ID  shift 16
+	NUM  shift 17
+	.  error
+
+	expr  goto 32
+
+
+state 27
+	stmt : ID error stmt .  (10)
+
+	.  reduce 10
+
+
+state 28
+	stmt : ID ASSIGN expr .  (8)
+	expr : expr . '+' expr  (11)
+	expr : expr . AND expr  (12)
+
+	'+'  shift 25
+	AND  shift 26
+	END_T  reduce 8
+	';'  reduce 8
+
+
+state 29
+	list : stmt ';' list .  (5)
+
+	.  reduce 5
+
+
+state 30
+	stmt : IF expr THEN stmt .  (7)
+
+	.  reduce 7
+
+
+state 31
+	expr : expr . '+' expr  (11)
+	expr : expr '+' expr .  (11)
+	expr : expr . AND expr  (12)
+
+	AND  shift 26
+	END_T  reduce 11
+	THEN  reduce 11
+	'+'  reduce 11
+	';'  reduce 11
+
+
+state 32
+	expr : expr . '+' expr  (11)
+	expr : expr . AND expr  (12)
+	expr : expr AND expr .  (12)
+
+	.  reduce 12
+
+
+16 terminals, 6 nonterminals
+15 grammar rules, 33 states

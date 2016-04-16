@@ -27,4 +27,5 @@ clean:
 	rm -f *.yy.c *.tab.c
 	rm -f *.tab.h
 	rm -f *.o
+	rm -f *.output *.stackdump
 	rm -f project
