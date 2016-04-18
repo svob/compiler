@@ -1,33 +1,26 @@
-; testing BLOCK DL statement
-
-program test;
+program programovic;
 
 begin
+    x := 3;
+    x := x and 0;
+    y := 0;
+    z := 0;
 
-; just a block
-    begin
-        x:=0;
-        print x
-    end;
+    print "trying recursive if";
+    if x then
+        if y then
+            if z then
+                begin
+                    p := 8;
+                    print "I'm inside :o";
+                    print p
+                end;
 
-; a block with statement_list
-    begin
-        x:=0;
-        y:=0;
-        if x then
-            c:=1;
-            begin
-                x:=2
-            end
-    end;
 
-; multiple included blocks
-    begin
+    if x and 0 then
         begin
-            begin
-                y:=2;
-                print "bry den"
-            end
-        end
-    end
+            p:=1;
+            print p
+        end;
+    print x
 end.

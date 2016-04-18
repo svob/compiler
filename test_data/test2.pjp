@@ -1,33 +1,33 @@
-; testing DL expressions
+; testing BLOCK DL statement
 
 program test;
 
 begin
 
-; expressions with numbers only
-    x := 1;
-    x := 1+2;
-    print x;
-    x := 1 and 2;
-    x := 1 + 2 and 3;
-    x := 1 and 2 + 3;
-    print x;
+; just a block
+    begin
+        x:=0;
+        print x
+    end;
 
-; expressions with vars
-    a := 1; b := 2; c := 0;
-    x := a;
-    x := a+b;
-    x := a and b;
-    print x;
-    x := a + b and c;
-    x := a and b + c;
-    print x;
+; a block with statement_list
+    begin
+        x:=0;
+        y:=0;
+        if x then
+            c:=1;
+            begin
+                x:=2
+            end
+    end;
 
-; mixed case
-    x := a + 4;
-    x := 0 and b;
-    x := 1 + b and 3;
-    x := a and 2 + c;
-    print x;
-    print 1 and x + 4 + 2 + b + c + a
+; multiple included blocks
+    begin
+        begin
+            begin
+                y:=2;
+                print "bry den"
+            end
+        end
+    end
 end.
