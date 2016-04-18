@@ -1,4 +1,5 @@
-%{    
+%{
+#define bool int
 #define true 1
 #define false 0
 #include <stdlib.h>
@@ -24,18 +25,14 @@ extern int yylex();
 #endif
 
 nodeType *root;
-Stack *stack;
 
-int tmp = 0;
-int lbl = 0;
-int symbols = 0;
-int err = false;
+bool err = false;
 
-int t_opt = false,
-    v_opt = false,
-    d_opt = false,
-    h_opt = false,
-    r_opt = false;
+bool t_opt = false,
+     v_opt = false,
+     d_opt = false,
+     h_opt = false,
+     r_opt = false;
 %}
 
 %union {
@@ -232,8 +229,6 @@ int main(int argc, char **argv) {
                 return execute(root);
             }
             else {
-                stack = malloc(sizeof(Stack));
-                stack_init(stack);
                 printf("\n\n");
                 printQuads(root);
                 printf("\tHLT, NULL, NULL, NULL\n");
@@ -358,14 +353,21 @@ void stack_shuffleTopNum(Stack *s) {
 
 void stack_shuffleTopId(Stack *s) {
     if (s->sizeId > 1) {
-        char *temp1 = stack_popId(stack);
-        char *temp2 = stack_popId(stack);
-        stack_pushId(stack, temp1);
-        stack_pushId(stack, temp2);
+        char *temp1 = stack_popId(s);
+        char *temp2 = stack_popId(s);
+        stack_pushId(s, temp1);
+        stack_pushId(s, temp2);
     }
 }
 
 void printQuads(nodeType *node) {
+    static int tmp;
+    static int lbl;
+    static Stack *stack = NULL;
+    if (!stack) {
+        stack = malloc(sizeof(Stack));
+    }
+    
     if (!node) return;
     switch (node->type) {
     case numType:
@@ -484,6 +486,8 @@ void printQuads(nodeType *node) {
 }
 
 int symlook(char *s) {
+    static int symbols;
+    
     for (int i = 0; i < symbols; i++) {
         if (strcmp(sym[i]->symbol, s) == 0)
             return i;
