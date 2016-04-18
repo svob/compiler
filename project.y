@@ -363,7 +363,7 @@ void stack_shuffleTopId(Stack *s) {
 void printQuads(nodeType *node) {
     static int tmp;
     static int lbl;
-    static Stack *stack = NULL;
+    static Stack *stack;
     if (!stack) {
         stack = malloc(sizeof(Stack));
     }
