@@ -334,7 +334,6 @@ int stack_popNum(Stack *s) {
 }
 
 char *stack_popId(Stack *s) {
-    char *nP;
     if (s->sizeId != 0) {
 	s->sizeId--;
 	return s->id[s->sizeId];
